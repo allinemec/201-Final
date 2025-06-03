@@ -1,0 +1,37 @@
+---
+title: "final project"
+author: "Amy Decaire, Alli Nemec, Olivia Zittel"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+file_name <- "products.csv"
+products_df <- read_csv(file_name)
+```
+
+```{r}
+products_df <- products_df|>
+  mutate(Chemical = ChemicalName)
+
+glimpse(products_df)
+```
+
+```{r}
+file_name <- "chem_data.csv"
+chemical_df <- read_csv(file_name)
+```
+
+```{r}
+chemical_df|>
+  glimpse()
+```
+
+```{r}
+products_df |>
+  full_join(chemical_df, by = "Chemical")
+```
