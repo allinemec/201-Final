@@ -7,6 +7,7 @@ editor: visual
 
 ```{r}
 library(tidyverse)
+library(ggplot2)
 ```
 
 ```{r}
@@ -32,6 +33,41 @@ chemical_df|>
 ```
 
 ```{r}
-products_df |>
+combined <- products_df |>
   full_join(chemical_df, by = "Chemical")
+
+# View combined dataset
+glimpse(combined)
+```
+```{r}
+cleaned <- combined |>
+  filter(!is.na(Chemical), !is.na(Type_of_Toxicity))
+```
+
+```{r}
+
+top_chems_df <- cleaned |>
+  count(Chemical) |>
+  arrange(desc(n)) |>
+  head(10)
+
+top_chems <- top_chems_df$Chemical
+
+filtered <- cleaned[0, ]  # create empty df with same columns
+
+for (chem in top_chems) {
+  filtered <- rbind(filtered, cleaned[cleaned$Chemical == chem, ])
+}
+
+ggplot(filtered, aes(x = Type_of_Toxicity, fill = Chemical)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Comparison of Toxicity Counts by Top 10 Chemicals",
+    x = "Type of Toxicity",
+    y = "Count",
+    fill = "Chemical"
+  ) +
+  theme_minimal() +
+  scale_fill_viridis_d()
+
 ```
